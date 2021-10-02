@@ -1,6 +1,12 @@
 const express = require('express');
-const app = express();
-app.use(express.json());
+const crypto = require('crypto');
+const connection = require('./database/connections');
+const routes = express.Router();
+
+routes.get('/users',async (req, res) =>{
+    const users = await connection ('users').select('*');
+    res.json(users);
+})
 
 /***
  * GET: Buscar / listar uma informação no backend
@@ -12,16 +18,21 @@ app.use(express.json());
  * Request body: corpo da requisição: nome, email, cpf
  */
 
-app.post('/users', (req, res) => {
-    const params = req.query;
-    console.log(params)
-        res.json({
-            nome: 'Lucas',
-            empresa: 'UESB'
-        })
+routes.post('/users',async (req, res) => {
+        const {nome, email, idade, empresa} = req.body;
+        const id = crypto.randomBytes(4).toString('HEX');
+    await connection('users').insert({
+        id,
+        nome,
+        email,
+        idade,
+        empresa
+    })
+        res.json({id})
 })
 
-app.post('/user', (req, res) => {
+/*** 
+routes.post('/user', (req, res) => {
     const params = req.body;
     console.log(params)
         res.json({
@@ -29,12 +40,14 @@ app.post('/user', (req, res) => {
         })
 })
 
-app.post('/user/:id', (req, res) => {
+routes.post('/user/:id', (req, res) => {
     const params = req.params;
     console.log(params)
         res.json({
             Mensagem: 'Sucesso'            
         })
 })
+*/
 
-app.listen(3001);
+
+module.exports = routes;
