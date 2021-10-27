@@ -1,12 +1,12 @@
 const express = require('express');
-const crypto = require('crypto');
-const connection = require('./database/connections');
 const routes = express.Router();
+const UserController = require('./controller/UserControler');
 
-routes.get('/users',async (req, res) =>{
-    const users = await connection ('users').select('*');
-    res.json(users);
-})
+routes.get('/users',UserController.list);
+routes.get('/users/:id',UserController.show);
+routes.post('/users',UserController.create);  
+routes.put('/users/:id',UserController.update);
+routes.delete('/users/:id',UserController.delete);
 
 /***
  * GET: Buscar / listar uma informação no backend
@@ -18,18 +18,7 @@ routes.get('/users',async (req, res) =>{
  * Request body: corpo da requisição: nome, email, cpf
  */
 
-routes.post('/users',async (req, res) => {
-        const {nome, email, idade, empresa} = req.body;
-        const id = crypto.randomBytes(4).toString('HEX');
-    await connection('users').insert({
-        id,
-        nome,
-        email,
-        idade,
-        empresa
-    })
-        res.json({id})
-})
+        
 
 /*** 
 routes.post('/user', (req, res) => {
