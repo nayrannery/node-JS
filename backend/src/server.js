@@ -1,5 +1,7 @@
 const express = require('express');
 const routes = require('./routes');
+const cors = require('cors');
+
 
 /*** 
 const sqlite3 = require('sqlite3').verbose();
@@ -13,7 +15,9 @@ let db = new sqlite3.Database('db.sqlite', (err)=>{
 */
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use(routes);
+
 app.listen(3001);
